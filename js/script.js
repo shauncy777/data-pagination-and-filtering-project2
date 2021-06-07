@@ -11,6 +11,13 @@ For assistance:
    Reach out in your Slack community: https://treehouse-fsjs-102.slack.com/app_redirect?channel=unit-2
 */
 
+
+const searchBar = `<label for="search" class="student-search">
+<span>Search by name</span>
+<input id="search" placeholder="Search by name...">
+<button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
+</label>`;
+document.querySelector("header").insertAdjacentHTML('beforeend', searchBar);
 const itemsPerPage = 9; // Global variable which stores the nine student per page limit
 
 
@@ -55,6 +62,7 @@ function addPagination(list) {
 
 
    }
+   // Makes the clicked page the highlighted active page
    linkList.addEventListener("click", (e) => {
       if (e.target.tagName === 'BUTTON') {
          const activeButton = document.querySelector(".active");
@@ -66,10 +74,43 @@ function addPagination(list) {
 
    });
 
+// Message to user when there aren't results   
+let firstPage = linkList.querySelector('button:first-child');
+   if (!firstPage) {
+   linkList.innerHTML = `<h1> No Results Found</h1>`;
+   return
+
+   }
+
+
+}
+
+// This gives the search bar functionality
+
+function performSearch(list){
+   let userInput = document.getElementById('search');
+   userInput.addEventListener('keyup',(event) => {
+      let typedInput = event.target.value;
+      let resultList = [];
+
+      for (let i = 0; i < list.length; i ++){
+         let firstName = list[i]['name']['first'].toLowerCase();
+         let lastName = list[i]['name']['last'].toLowerCase();
+         if (firstName.includes(typedInput) || lastName.includes(typedInput)){
+            resultList.push(list[i]);
+
+
+         }
+      }
+      showPage(resultList, 1);
+      addPagination(resultList);
+   });
+
 }
 
 addPagination(data);
 showPage(data, 1);
+performSearch(data);
 
 
 
